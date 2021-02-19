@@ -7,6 +7,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.graphics.Canvas;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameView extends SurfaceView implements Runnable {
 
     private Thread thread;
@@ -15,6 +18,8 @@ public class GameView extends SurfaceView implements Runnable {
     private int screenX, screenY;
     public static float screenRatioX, screenRatioY;
     private Paint paint;
+    private List<Bullet> bullets;
+    public static boolean wantToShoot = false;
     Rocket rocket;
 
     public GameView(Context context, int screenX, int screenY) {
@@ -27,7 +32,9 @@ public class GameView extends SurfaceView implements Runnable {
         background1 = new Background(screenX, screenY, getResources());
         background2 = new Background(screenX, screenY, getResources());
 
-        rocket = new Rocket(screenX,screenY, getResources());
+        rocket = new Rocket(this, screenX,screenY, getResources());
+
+        bullets = new ArrayList<>();
 
         background2.y = -1* (background2.backgroud.getHeight());
         paint = new Paint();
@@ -62,6 +69,16 @@ public class GameView extends SurfaceView implements Runnable {
         if (rocket.x > screenX - rocket.width){
             rocket.x = screenX - rocket.width;
         }
+        List<Bullet> trash = new ArrayList<>();
+        for (Bullet bullet: bullets) {
+            if (bullet.x > screenX){
+                trash.add(bullet);
+            }
+            bullet.y -= 50 * screenRatioY;
+        }
+        for (Bullet bullet: trash) {
+            bullets.remove(bullet);
+        }
     }
 
     private void draw(){
@@ -70,8 +87,11 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawBitmap(background1.backgroud, background1.x, background1.y, paint);
             canvas.drawBitmap(background2.backgroud, background2.x, background2.y, paint);
 
-            canvas.drawBitmap(rocket.getRocket(), rocket.x, rocket.y, paint);
+            for (Bullet bullet: bullets) {
+                canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint);
+            }
 
+            canvas.drawBitmap(rocket.getRocket(), rocket.x, rocket.y, paint);
             getHolder().unlockCanvasAndPost(canvas);
         }
 
@@ -111,10 +131,21 @@ public class GameView extends SurfaceView implements Runnable {
                 break;
             case MotionEvent.ACTION_UP:
                 rocket.isGoingLeft = false;
+                if(event.getX() > screenX/2){
+                    wantToShoot = true;
+                    rocket.shoot++;
+                }
                 break;
         }
 
 
         return true;
+    }
+
+    public void newBullet() {
+        Bullet bullet = new Bullet(getResources());
+        bullet.x = rocket.x + (rocket.width/2);
+        bullet.y = rocket.y + rocket.height;
+        bullets.add(bullet);
     }
 }
