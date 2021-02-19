@@ -3,6 +3,7 @@ package com.abies.spaceinvaders;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 
 import static com.abies.spaceinvaders.GameView.screenRatioX;
 import static com.abies.spaceinvaders.GameView.screenRatioY;
@@ -11,7 +12,7 @@ public class Rocket {
     boolean isGoingLeft = false;
     int shoot = 0;
     int x, y, width, height, flyController = 0, shootCounter = 1;
-    Bitmap rocket, bullet1, bullet2, bullet3, bullet4, bullet5;
+    Bitmap rocket, bullet1, bullet2, bullet3, bullet4, bullet5, explosion;
     private GameView gameView;
     Rocket (GameView gameView, int screenX, int screenY, Resources res){
 
@@ -45,6 +46,8 @@ public class Rocket {
         bullet3 = Bitmap.createScaledBitmap(bullet3, width, height, false);
         bullet4 = Bitmap.createScaledBitmap(bullet4, width, height, false);
         bullet5 = Bitmap.createScaledBitmap(bullet5, width, height, false);
+
+        explosion = BitmapFactory.decodeResource(res, R.drawable.explosion);
     }
     Bitmap getRocket(){
         if (shoot!=0){
@@ -70,5 +73,12 @@ public class Rocket {
             return bullet5;
         }
         return rocket;
+    }
+    Rect getCollisonShape(){
+        return new Rect(x,y,x+width,y+height);
+    }
+
+    Bitmap getExplosion(){
+        return explosion;
     }
 }
