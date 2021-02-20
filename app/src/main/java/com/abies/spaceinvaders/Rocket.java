@@ -48,6 +48,7 @@ public class Rocket {
         bullet5 = Bitmap.createScaledBitmap(bullet5, width, height, false);
 
         explosion = BitmapFactory.decodeResource(res, R.drawable.explosion);
+        explosion = Bitmap.createScaledBitmap(explosion, width, height, false);
     }
     Bitmap getRocket(){
         if (shoot!=0){

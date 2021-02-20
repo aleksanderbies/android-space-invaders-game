@@ -20,7 +20,7 @@ public class GameView extends SurfaceView implements Runnable {
     private int screenX, screenY;
     public static float screenRatioX, screenRatioY;
     private Paint paint;
-    private Enemies enemy;
+    private Enemies [] enemies;
     private Random random;
     private List<Bullet> bullets;
     Rocket rocket;
@@ -43,7 +43,12 @@ public class GameView extends SurfaceView implements Runnable {
 
         paint = new Paint();
 
-        enemy = new Enemies(getResources());
+        enemies = new Enemies[4];
+
+        for (int i =0; i < 4; i++){
+            Enemies enemy = new Enemies(getResources());
+            enemies[i] = enemy;
+        }
 
         random = new Random();
     }
@@ -79,36 +84,48 @@ public class GameView extends SurfaceView implements Runnable {
         }
         List<Bullet> trash = new ArrayList<>();
         for (Bullet bullet: bullets) {
-            if (bullet.x > screenX){
+            if (bullet.y < 0){
                 trash.add(bullet);
             }
             bullet.y -= 50 * screenRatioY;
 
-            for (Enemies enemy:
-                 ) {
-                
+            for (Enemies enemy: enemies) {
+                if (Rect.intersects(enemy.getCollisonShape(), bullet.getCollisonShape())){
+                    enemy.y = -500;
+                    bullet.y = -500;
+                    enemy.wasShot = true;
+                }
             }
         }
         for (Bullet bullet: trash) {
             bullets.remove(bullet);
         }
 
-        enemy.y += enemy.speed;
+        for (Enemies enemy : enemies){
 
-        if (enemy.y + enemy.height < 0){
-            int bound = (int) (30 * screenRatioY);
-            enemy.speed = random.nextInt(bound);
-            if (enemy.speed < 10 * screenRatioY){
-                enemy.speed = (int) (10 * screenRatioY);
+            enemy.y += enemy.speed;
+            if (enemy.x + enemy.width < 0){
+
+                if(!enemy.wasShot){
+                    isGameOver = true;
+                    return;
+                }
+
+                int bound = (int) (30 * screenRatioY);
+                enemy.speed = random.nextInt(bound);
+                if (enemy.speed < 10 * screenRatioY){
+                    enemy.speed = (int) (10 * screenRatioX);
+                }
+                enemy.y = 0;
+                enemy.x = random.nextInt(screenY- enemy.height);
+
+                enemy.wasShot = false;
             }
-            enemy.y = 0;
-            enemy.x = random.nextInt(screenX - enemy.width);
+            if (Rect.intersects(enemy.getCollisonShape(),rocket.getCollisonShape())){
+                isGameOver = true;
+                return;
+            }
         }
-
-        if (Rect.intersects(enemy.getCollisonShape(),rocket.getCollisonShape())){
-            isGameOver = true;
-        }
-
     }
 
     private void draw(){
@@ -120,7 +137,13 @@ public class GameView extends SurfaceView implements Runnable {
                 isPlaying = false;
                 canvas.drawBitmap(rocket.getExplosion(), rocket.x, rocket.y, paint);
                 getHolder().unlockCanvasAndPost(canvas);
+                return;
             }
+
+            for (Enemies enemy : enemies){
+                canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);
+            }
+
             for (Bullet bullet: bullets) {
                 canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint);
             }

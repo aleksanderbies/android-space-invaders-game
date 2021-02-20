@@ -3,6 +3,7 @@ package com.abies.spaceinvaders;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 
 import static com.abies.spaceinvaders.GameView.screenRatioX;
 import static com.abies.spaceinvaders.GameView.screenRatioY;
@@ -25,5 +26,8 @@ public class Bullet {
         height *= (int) screenRatioY;
 
         bullet = Bitmap.createScaledBitmap(bullet, width, height, false);
+    }
+    Rect getCollisonShape(){
+        return new Rect(x,y,x+width,y+height);
     }
 }
