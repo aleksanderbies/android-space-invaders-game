@@ -29,5 +29,5 @@ public class Bullet {
     }
     Rect getCollisonShape(){
         return new Rect(x,y,x+width,y+height);
-    }
+    } //get rectangle to check collision with enemies
 }

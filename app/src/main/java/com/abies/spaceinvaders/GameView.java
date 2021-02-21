@@ -1,6 +1,5 @@
 package com.abies.spaceinvaders;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +10,6 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
-import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.graphics.Canvas;
@@ -72,7 +70,7 @@ public class GameView extends SurfaceView implements Runnable {
         background2.y = -1* (background2.backgroud.getHeight());
 
         paint = new Paint();
-        paint.setTextSize(128);
+        paint.setTextSize(78);
         paint.setColor(Color.WHITE);
 
         enemies = new Enemies[4];
@@ -92,7 +90,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run() { //main loop
         while (isPlaying){
             update();
             draw();
@@ -101,6 +99,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void update(){
+        //updates all games elements
         background1.y += 10 * screenRatioX;
         background2.y += 10 * screenRatioX;
         if (background1.y > background1.backgroud.getHeight()){
@@ -166,14 +165,17 @@ public class GameView extends SurfaceView implements Runnable {
                 enemy.y = -200-enemy.height;
                 enemy.x = random.nextInt(screenX- enemy.width);
             }
-            if (Rect.intersects(enemy.getCollisonShape(),rocket.getCollisonShape())){
-                isGameOver = true;
-                return;
+            if (enemy.y<rocket.y+(0.2*rocket.height)){
+                if (Rect.intersects(enemy.getCollisonShape(),rocket.getCollisonShape())){
+                    isGameOver = true;
+                    return;
+                }
             }
         }
     }
 
     private void draw(){
+        //draws all games elements
         if (getHolder().getSurface().isValid()){
             Canvas canvas = getHolder().lockCanvas();
             canvas.drawBitmap(background1.backgroud, background1.x, background1.y, paint);
@@ -183,7 +185,7 @@ public class GameView extends SurfaceView implements Runnable {
                 canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);
             }
 
-            canvas.drawText(String.valueOf(score), 890 * screenRatioX, 150 * screenRatioY, paint );
+            canvas.drawText("Score: " + String.valueOf(score), 720 * screenRatioX, 100 * screenRatioY, paint );
 
             if (isGameOver){
                 isPlaying = false;
@@ -193,10 +195,6 @@ public class GameView extends SurfaceView implements Runnable {
                 score = 0;
                 waitBeforeExit();
                 return;
-            }
-
-            for (Enemies enemy : enemies){
-                canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);
             }
 
             for (Bullet bullet: bullets) {
@@ -210,6 +208,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void waitBeforeExit() {
+        //waiting 3 seconds until go back to main activity
         try {
             Thread.sleep(3000);
             activity.startActivity(new Intent(activity, MainActivity.class));
@@ -220,7 +219,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void saveIfHighScore() {
-
+        //saving high score to preferences
         if (preferences.getInt("highscore", 0)<score) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putInt("highscore",score);
@@ -230,6 +229,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void sleep(){
+        //sleep thread for 17 miliseconds
         try {
             thread.sleep(17);
         } catch(InterruptedException e){
@@ -238,12 +238,14 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void resume(){
+        //resume game
         isPlaying = true;
         thread = new Thread(this);
         thread.start();
     }
 
     public void pause(){
+        //pause the game
         try {
             isPlaying = false;
             thread.join();
@@ -254,7 +256,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
+        //control player's rocket and shoot
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 if(event.getX() < screenX/2){
@@ -274,7 +276,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void newBullet() {
-
+        //creating new bullet
         if (!preferences.getBoolean("isMute", false)){
             soundPool.play(sound, 1, 1, 0, 0, 1 );
         }
