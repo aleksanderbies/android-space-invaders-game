@@ -3,11 +3,16 @@ package com.abies.spaceinvaders;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+
+    private boolean isMute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +23,34 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, GameActivity.class));
+            }
+        });
+        TextView highScoreTxt = findViewById(R.id.highscoretext);
+
+        SharedPreferences preferences = getSharedPreferences("game", MODE_PRIVATE);
+        highScoreTxt.setText("High Score: "+preferences.getInt("highscore", 0));
+
+        isMute = preferences.getBoolean("isMute", false);
+
+        ImageView volumeCtrl=findViewById(R.id.volumeCtrl);
+
+        if (isMute){
+            volumeCtrl.setImageResource(R.drawable.ic_baseline_volume_off_24);
+        }else{
+            volumeCtrl.setImageResource(R.drawable.ic_baseline_volume_up_24);
+        }
+        volumeCtrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isMute = !isMute;
+                if (isMute){
+                    volumeCtrl.setImageResource(R.drawable.ic_baseline_volume_off_24);
+                }else{
+                    volumeCtrl.setImageResource(R.drawable.ic_baseline_volume_up_24);
+                }
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("isMute", isMute);
+                editor.apply();
             }
         });
     }
