@@ -5,13 +5,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
+import java.util.Random;
 
 import static com.abies.spaceinvaders.GameView.screenRatioX;
 import static com.abies.spaceinvaders.GameView.screenRatioY;
+import static com.abies.spaceinvaders.GameView.screenX;
 
 public class Enemies {
     public int speed = 20;
     public boolean wasShot = false;
+    private Random random;
     int x, y, width, height, enemiesCounter = 1;
     Bitmap enemy1,enemy2,enemy3,enemy4;
     Enemies(Resources res) {
@@ -34,7 +37,10 @@ public class Enemies {
         enemy3 = Bitmap.createScaledBitmap(enemy3, width, height, false);
         enemy4 = Bitmap.createScaledBitmap(enemy4, width, height, false);
 
-        y = -height;
+        random = new Random();
+
+        x = random.nextInt(screenX - width);
+        y = random.nextInt(150) -  4 * height;
     }
     Bitmap getEnemy(){
         if(enemiesCounter == 1){

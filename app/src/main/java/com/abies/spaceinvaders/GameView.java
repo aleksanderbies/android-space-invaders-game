@@ -17,7 +17,7 @@ public class GameView extends SurfaceView implements Runnable {
     private Thread thread;
     private boolean isPlaying, isGameOver = false;
     private Background background1, background2;
-    private int screenX, screenY;
+    public static int screenX, screenY;
     public static float screenRatioX, screenRatioY;
     private Paint paint;
     private Enemies [] enemies;
@@ -107,17 +107,16 @@ public class GameView extends SurfaceView implements Runnable {
             if (enemy.x + enemy.width < 0){
 
                 if(!enemy.wasShot){
-                    isGameOver = true;
-                    return;
+                   isGameOver = true;
+                   return;
                 }
-
                 int bound = (int) (30 * screenRatioY);
                 enemy.speed = random.nextInt(bound);
                 if (enemy.speed < 10 * screenRatioY){
-                    enemy.speed = (int) (10 * screenRatioX);
+                    enemy.speed = (int) (10 * screenRatioY);
                 }
-                enemy.y = 0;
-                enemy.x = random.nextInt(screenY- enemy.height);
+                enemy.y = random.nextInt(150) -  4 * enemy.height;
+                enemy.x = random.nextInt(screenX- enemy.width);
 
                 enemy.wasShot = false;
             }
