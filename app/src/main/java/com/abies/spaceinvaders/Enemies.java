@@ -29,8 +29,8 @@ public class Enemies {
         width /= 2;
         height /= 2;
 
-        width *= (int) screenRatioX;
-        height *= (int) screenRatioY;
+        width = (int) (width * screenRatioX);
+        height = (int) (height * screenRatioY);
 
         enemy1 = Bitmap.createScaledBitmap(enemy1, width, height, false);
         enemy2 = Bitmap.createScaledBitmap(enemy2, width, height, false);
@@ -40,7 +40,7 @@ public class Enemies {
         random = new Random();
 
         x = random.nextInt(screenX - width);
-        y = random.nextInt(150) -  4 * height;
+        y = -height;
     }
     Bitmap getEnemy(){
         if(enemiesCounter == 1){

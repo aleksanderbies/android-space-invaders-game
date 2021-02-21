@@ -26,8 +26,8 @@ public class Rocket {
         width /= 2;
         height /= 2;
 
-        width *= (int) screenRatioX;
-        height *= (int) screenRatioY;
+        width = (int) (width * screenRatioX);
+        height = (int) (height * screenRatioY);
 
         rocket = Bitmap.createScaledBitmap(rocket, width, height, false);
         rocket = Bitmap.createScaledBitmap(rocket, width, height, false);

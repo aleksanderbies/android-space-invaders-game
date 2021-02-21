@@ -77,11 +77,17 @@ public class GameView extends SurfaceView implements Runnable {
 
         enemies = new Enemies[4];
 
-        for (int i =0; i < 4; i++){
+        for (int i = 0; i < 4; i++){
             Enemies enemy = new Enemies(getResources());
             enemies[i] = enemy;
         }
-
+        for (int i = 0; i < 4; i++){
+            if (i==0){
+                enemies[i].y = -enemies[i].height;
+            }else if(i>=1 && i<4){
+                enemies[i].y = enemies[i-1].y - enemies[i].height;
+            }
+        }
         random = new Random();
     }
 
@@ -123,7 +129,7 @@ public class GameView extends SurfaceView implements Runnable {
 
             for (Enemies enemy: enemies) {
                 if (Rect.intersects(enemy.getCollisonShape(), bullet.getCollisonShape())){
-                    enemy.y = -500;
+                    enemy.y = -200-enemy.height;
                     bullet.y = -500;
                     score++;
                     enemy.x = random.nextInt(screenX- enemy.width);
@@ -133,13 +139,19 @@ public class GameView extends SurfaceView implements Runnable {
         for (Bullet bullet: trash) {
             bullets.remove(bullet);
         }
-
+        for (int i = 0; i<4; i++){
+            for (int j = i+1; j<4; j++){
+                if(Rect.intersects(enemies[i].getCollisonShape(), enemies[j].getCollisonShape())){
+                enemies[i].x = random.nextInt(screenX- enemies[i].width);
+                }
+            }
+        }
         for (Enemies enemy : enemies){
 
             enemy.y += enemy.speed;
 
             if (enemy.y>screenY){
-                enemy.y = -500;
+                enemy.y = -200-enemy.height;
                 enemy.x = random.nextInt(screenX- enemy.width);
                 score -=2;
             }
@@ -151,7 +163,7 @@ public class GameView extends SurfaceView implements Runnable {
                 if (enemy.speed < 10 * screenRatioY){
                     enemy.speed = (int) (10 * screenRatioY);
                 }
-                enemy.y = random.nextInt(150) -  4 * enemy.height;
+                enemy.y = -200-enemy.height;
                 enemy.x = random.nextInt(screenX- enemy.width);
             }
             if (Rect.intersects(enemy.getCollisonShape(),rocket.getCollisonShape())){
