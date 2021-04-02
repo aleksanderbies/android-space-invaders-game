@@ -21,3 +21,8 @@ License
 ----
 
 MIT
+
+## Status of project: 
+```diff 
++ COMPLETE
+```
