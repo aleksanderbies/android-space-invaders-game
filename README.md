@@ -1,6 +1,6 @@
 # Space Invaders game for Android mobile devices
 
-Space Invaders is an arcade game for Android mobile phones, tablets etc. It was implemented in Java using Android Studio. Player control the spaceship by touch the left side of the screen and shoot down enemies spaceships by touching the right side of the screen. If the player shoot down the enemy spaceship, he gets one additional point, if the enemy spaceship crosses the screen area, two points are deducted from the player as a penalty. 
+Space Invaders is an arcade game for Android mobile phones, tablets etc. It was implemented in Java using Android Studio. Player control the spaceship by touch the left side of the screen and shoot down enemies spaceships by touching the right side of the screen. <br /> If the player shoot down the enemy spaceship, he gets one additional point, if the enemy spaceship crosses the screen area, two points are deducted from the player as a penalty. 
 If player's spaceship run into enemy spaceship it is game over. The best score is saved and displayed on main activity sceen. 
 
 ## Some sceenshots from the game 
